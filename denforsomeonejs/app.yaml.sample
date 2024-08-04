@@ -1,0 +1,11 @@
+runtime: nodejs22
+env: standard
+entrypoint: node ./server.js
+
+env_variables:
+  SQUARE_ACCESS_TOKEN: "EAAAl5wtp6qYNbxh3Sa2uEsTf29r_Ii0IrHScYC9CDU_Ay6jHXQTNF4FJdgflNPv"
+  NODE_ENV: "production"
+  PORT: "8080"
+  SESAME_UUID: "11200329-0007-0209-AD00-1900FFFFFFFF"
+  SESAME_API_KEY: "RqeLwo4GtK5pRrkpzxUno9tZ2ucycg8u61HPBEK0"
+  KEY_SECRET_HEX: "4dd3b9a4776aed16146833fdee2ad41c"

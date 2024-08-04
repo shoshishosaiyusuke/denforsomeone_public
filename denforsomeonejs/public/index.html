@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Number Verification</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #e0f2e9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+        .logo {
+            max-width: 100px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 26px;
+            color: #007d47;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007d47;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #006a3b;
+        }
+        .error {
+            color: red;
+            display: none;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        /* 編集点: 注意事項コーナー */
+        .notice {
+            text-align: left;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f7fcf8;
+            border: 1px solid #c8e6c9;
+            border-radius: 8px;
+        }
+        .notice h2 {
+            font-size: 18px;
+            color: #006a3b;
+            margin-bottom: 10px;
+        }
+        .notice ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        .notice li {
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="https://www.shoshishosai.com/">
+            <img src="denforsomeone_logo.jpg" alt="Logo" class="logo">
+        </a>
+        
+        <h1>予約時に入力した電話番号を入力してください</h1>
+        <input type="text" id="phoneNumber" placeholder="電話番号" />
+        <button id="verifyButton">ひらけ、ゴマ</button>
+        <p id="error" class="error">電話番号の形式が正しくありません.</p>
+        
+        <!-- 編集点: 注意事項コーナー -->
+        <div class="notice">
+            <h2>注意事項:</h2>
+            <ul>
+                <li>予約時間内は何度でも解錠可能です。</li>
+                <li>鍵が「閉まった」場合は、もう一度試してください。</li>
+                <li>極力、予約時間を守って出場してください。</li>
+                <li>本の購入方法は店内の案内表示をご覧ください。</li>
+                <li>トラブル時は店主まで電話してください。</li>
+                <li>店主電話番号：080-5168-9357</li>
+            
+            </ul>
+        </div>
+    </div>
+  
+    <script>
+        document.getElementById('verifyButton').addEventListener('click', function() {
+            var phoneNumber = document.getElementById('phoneNumber').value;
+            var errorElement = document.getElementById('error');
+    
+            // Basic validation to prevent XSS
+            var phoneRegex = /^[0-9\-]+$/;
+            if (!phoneRegex.test(phoneNumber)) {
+                if (phoneNumber !== "test") { // Allow "test" as a wildcard for testing purposes
+                    errorElement.style.display = 'block';
+                    return;
+                }
+            } else {
+                errorElement.style.display = 'none';
+            }
+    
+            if (phoneNumber === "test") {
+                window.location.href = '/success';
+                return;
+            }
+    
+            // Make an API call to the server for verification
+            fetch('/verify', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ phoneNumber: phoneNumber })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'accept') {
+                    errorElement.textContent = '認証されました!鍵が閉まってしまった場合はもう一度ボタンを押してください';
+                    errorElement.style.color = 'green'; // Display success message in green
+                } else {
+                    errorElement.textContent = data.message || '電話番号の形式が適切ではありません';
+                    errorElement.style.color = 'red'; // Keep error messages in red
+                }
+                errorElement.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                errorElement.textContent = 'ネットワークエラー.店主まで連絡ください 08051689357';
+                errorElement.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html>
