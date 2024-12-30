@@ -163,7 +163,7 @@ end
 u1--->|"Square標準機能"|sqr
 u2-->|"QR読み込みで画面に遷移</br>電話番号入力"|sqi
 sqi--->|"API2"|ses
-
+sqi<-..->db
 ses-->|"解錠"|door
 
 ```
@@ -230,7 +230,7 @@ participant sqi as 解錠フォーム
 participant nr as Wifiモジュール
 participant ses as セサミデバイス
 participant door as DOOR
-
+participant db as 開場履歴DB
 
 
 note over sqi,nr :global/wifi
@@ -244,7 +244,7 @@ participant sqi as 解錠フォーム
 
 participant nr as wifiモジュール
 participant ses as セサミデバイス
-
+participant db as 開場履歴
 
 u-->>+mer: 来訪
 note over mer : 解錠フォーム誘導
@@ -252,7 +252,7 @@ mer->>-sqi : 解錠フォームアクセス・<br>電話番号入力
 sqi->>sqr : 該当電話番号で予約情報取得
 sqr->>+sqi : 結果返却
 sqi->sqi: 現在時刻取得
-note right of sqi : 現在時間判定はファジーに(予約時間の前 1時間許容,終了時間後15分許容)<br>※実装していない
+note right of sqi : 現在時間判定はファジーに(予約時間の前 1時間許容,終了時間後15分許容)
 sqi->>-u: 解錠ボタンアクティベート
 u->>sqi:解錠ボタン押下
 
@@ -266,7 +266,7 @@ ses->>nr: 結果返却
 nr->>+sqi: 結果返却
 sqi->>u : 成功表示
 ses-->>u : 解錠 #物理的に現場で鍵が開く
-
+sqi->>-db : 解錠履歴記録
 sqi->>sqi : フォームリフレッシュ
 
 door->>u : x秒オートロック
